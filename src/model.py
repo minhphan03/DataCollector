@@ -13,7 +13,7 @@ def build_model(x, y):
     model = Sequential()
 
     # the input is multiple nodes, with each node contain 90 days' worth of data (hence the shape)
-    model.add(layers.LSTM(100, return_sequences=True, input_shape=(x_train.shape[1],1)))
+    model.add(layers.LSTM(100, return_sequences=True, input_shape=(x.shape[1],1)))
     
     # add another layer ?
     model.add(layers.LSTM(100, return_sequences=True, dropout=0.2))
