@@ -1,16 +1,14 @@
 import json
 from datetime import datetime
 import scrapy
-import requests
-from bs4 import BeautifulSoup
 
-web = requests.get('https://openweathermap.org/city/1580578')
-soup = BeautifulSoup(web.content)
+# web = requests.get('https://openweathermap.org/city/1580578')
+# soup = BeautifulSoup(web.content)
 
 class Scraper(scrapy.Spider):
     name = 'weatherdata'
     start_urls = [
-        'https://openweathermap.org/city/1580578'
+        'https://openweathermap.org/city/1580578' # Ho Chi Minh City, Vietnam
     ]
     headers = {
         "Accept": "*/*",
@@ -39,7 +37,10 @@ class Scraper(scrapy.Spider):
         data = json.loads(response.body)
         
         # collect necessary items
-        rain = data['rain']
+        if 'rain' in data:
+            rain = data['rain']
+        else:
+            rain = {}
         weather = {
             'main': data['weather'][0]['main'],
             'description': data['weather'][0]['description']
@@ -51,7 +52,7 @@ class Scraper(scrapy.Spider):
         humidity = data['main']['humidity']
         wind = data['wind']
         time = str(datetime.now())
-        yield {
+        new_data = {
             'time': time,
             'description': weather,
             'rain': rain,
@@ -59,3 +60,6 @@ class Scraper(scrapy.Spider):
             'humidity': humidity,
             'wind': wind
         }
+
+        self.ti.xcom_push('weather_data', json.dumps(new_data))
+        yield new_data
