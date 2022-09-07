@@ -26,7 +26,6 @@ class Scraper(scrapy.Spider):
         super().__init__(name, **kwargs)
         self.ti = ti
         self.bucket = 'weather-data'
-
     def parse(self, response, **kwargs):
         url = 'https://openweathermap.org/data/2.5/weather?id=1566083&appid=439d4b804bc8187953eb36d2a8c26a02'
 
@@ -53,12 +52,20 @@ class Scraper(scrapy.Spider):
         wind = data['wind']
         time = str(datetime.now())
         new_data = {
-            'time': time,
-            'description': weather,
-            'rain': rain,
-            'temp': temp,
-            'humidity': humidity,
-            'wind': wind
+            'measurement': 'weather_indices',
+            'tags': {
+                'description': weather['main'],
+                'city': data['name'],
+                'cityID': data['id']
+            },
+            'fields': {    
+                'weather': weather, 
+                'rain': rain,
+                'temp': temp,
+                'humidity': humidity,
+                'wind': wind
+            },
+            'time': time
         }
 
         self.ti.xcom_push('weather_data', json.dumps(new_data))

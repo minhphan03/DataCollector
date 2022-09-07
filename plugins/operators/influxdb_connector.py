@@ -3,6 +3,7 @@ from typing import Any, Dict
 from airflow.utils.decorators import apply_defaults
 from airflow.utils.context import Context
 from airflow.models import BaseOperator
+from hooks.influxdb_connector import InfluxDBConnectorHook
 
 class InfluxDBQueryOperator(BaseOperator):
     """
@@ -45,7 +46,7 @@ class InfluxDBQueryDataFrameOperator(InfluxDBQueryOperator):
 
     def execute(self, context: Context) -> Any:
         self.log.info('Executing: %s', self.query)
-        self.hook = InfluxDBConnectionHook(conn_id=self.influxdb_conn_id)
+        self.hook = InfluxDBConnectorHook(conn_id=self.influxdb_conn_id)
         self.hook.query_data_frame(self.query)
     
 
