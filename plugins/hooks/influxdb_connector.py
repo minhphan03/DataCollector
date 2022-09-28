@@ -130,6 +130,7 @@ class InfluxDBConnectorHook(BaseHook):
             '_columns': keep_column,
         }
 
+        # query in InfluxDB language
         query = '''
             from(bucket: _bucket)
                 |> range(start: -90d)

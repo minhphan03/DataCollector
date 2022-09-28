@@ -34,7 +34,7 @@ class InfluxDBQueryOperator(BaseOperator):
     
     def execute(self, context: Context) -> Any:
         self.log.info('Executing: %s', self.query)
-        self.hook = InfluxDBConnectionHook(conn_id=self.influxdb_conn_id)
+        self.hook = InfluxDBConnectorHook(conn_id=self.influxdb_conn_id)
         self.hook.query(self.query)
 
 class InfluxDBQueryDataFrameOperator(InfluxDBQueryOperator):
